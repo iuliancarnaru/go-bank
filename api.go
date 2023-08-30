@@ -61,25 +61,29 @@ func (s *APIServer) handleAccount(w http.ResponseWriter, r *http.Request) error 
 		return s.handleCreateAccount(w, r)
 	}
 
+	return fmt.Errorf("method not allowed %s", r.Method)
+}
+
+func (s *APIServer) handleGetAccountByID(w http.ResponseWriter, r *http.Request) error {
+	if r.Method == "GET" {
+		id, err := getID(r)
+		if err != nil {
+			return err
+		}
+
+		account, err := s.store.GetAccountById(id)
+		if err != nil {
+			return err
+		}
+
+		return writeJSON(w, http.StatusOK, account)
+	}
+
 	if r.Method == "DELETE" {
 		return s.handleDeleteAccount(w, r)
 	}
 
 	return fmt.Errorf("method not allowed %s", r.Method)
-}
-
-func (s *APIServer) handleGetAccountByID(w http.ResponseWriter, r *http.Request) error {
-	id, err := getID(r)
-	if err != nil {
-		return err
-	}
-
-	account, err := s.store.GetAccountById(id)
-	if err != nil {
-		return err
-	}
-
-	return writeJSON(w, http.StatusOK, account)
 }
 
 func (s *APIServer) handleGetAccount(w http.ResponseWriter, r *http.Request) error {
@@ -115,7 +119,7 @@ func (s *APIServer) handleDeleteAccount(w http.ResponseWriter, r *http.Request) 
 		return err
 	}
 
-	return writeJSON(w, http.StatusNoContent, map[string]int{"deleted": id})
+	return writeJSON(w, http.StatusOK, map[string]int{"deleted": id})
 }
 
 func (s *APIServer) handleTransfer(w http.ResponseWriter, r *http.Request) error {

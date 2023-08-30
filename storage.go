@@ -84,12 +84,9 @@ func (s *PostgresStore) UpdateAccount(*Account) error {
 }
 
 func (s *PostgresStore) DeleteAccount(id int) error {
-	sqlStatement := `DELETE FROM users WHERE id = $1;`
-	_, err := s.db.Exec(sqlStatement, id)
-	if err != nil {
-		return err
-	}
-	return nil
+	sqlStatement := `DELETE FROM account WHERE id = $1;`
+	_, err := s.db.Query(sqlStatement, id)
+	return err
 }
 
 func (s *PostgresStore) GetAccountById(id int) (*Account, error) {
