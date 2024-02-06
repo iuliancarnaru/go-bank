@@ -17,11 +17,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// fmt.Printf("%+v\n", store)
 	if err := store.Init(); err != nil {
 		log.Fatal(err)
 	}
 
-	server := NewAPIServer(":4000", store)
-	server.Run()
+	srv := NewAPIServer(":4000", store)
+	srv.Run()
 }
